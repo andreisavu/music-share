@@ -1,0 +1,30 @@
+$def with (content)
+<html>
+	<head>
+$if 'title' in content and content.title:
+	<title>$content.title - MusicShare</title>
+$else:
+	<title>MusicShare - Find any music</title>
+
+	<link rel="stylesheet" type="text/css" href="/static/style.css" />
+	</head>
+	<body>
+	<div class="header">
+		<h1>MusicShare - Find any music</h1>
+	</div>
+	<div class="content">
+$:content
+	</div>
+	<div class="footer">
+	<ul>
+		<li><a href="/">home</a></li>
+		<li><a href="/upload">upload</a></li>
+		<li><a href="/api/about">api</a></li>
+		<li><a href="/search">search</a></li>
+		<li><a href="/about">about</a></li>
+	</ul>
+	</div>
+
+	</body>
+</html>
+

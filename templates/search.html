@@ -1,0 +1,21 @@
+$def with(files, query='', title=None)
+$var title: $title
+
+<form action="/search" method="GET">
+<fieldset>
+<input type="text" name="q" value="$query" />
+<button type="submit">Search</button>
+</fieldset>
+</form>
+
+$for file in files:
+	<b>Original:</b> $file.filename<br />
+	<b>Player:</b>
+	<object type="application/x-shockwave-flash" data="/static/player_mp3.swf" width="200" height="20">
+		<param name="movie" value="/static/player_mp3.swf" /> 
+		<param name="FlashVars" value="mp3=/media/$(file.id)&amp;showstop=1" />
+	</object>
+	<hr />
+
+
+
