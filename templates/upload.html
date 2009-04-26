@@ -1,11 +1,26 @@
 $def with (title=None)
 $var title: $title
 
-<form action="/upload" method="POST"  enctype="multipart/form-data">
-<fieldset>
-<input type="file" name="file" />
-<button type="submit">Upload</button>
-</fieldset>
-</form>
+<div class="ui-tabs ui-widget ui-widget-content ui-corner-all" id="tabs">
+   <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+      <li class="ui-state-default ui-corner-top"><a href="#upload">Upload</a></li>
+	</ul>
 
+ <div class="ui-tabs-panel ui-widget-content ui-corner-bottom" id="upload">
+	<p>
+		<form class="uploadForm" action="/upload" method="POST"  enctype="multipart/form-data">
+		<input type="file" name="file" />
+		<button type="submit">Upload</button>
+		</form>
+	</p>
+	</div>
 
+</div>
+
+<script type="text/javascript">
+$$(document).ready(function() {
+	$$('#tabs').tabs();
+});
+</script>
+
+<br /><br />

@@ -1,12 +1,27 @@
 $def with(files, query='', title=None)
 $var title: $title
 
-<form action="/search" method="GET">
-<fieldset>
-<input type="text" name="q" value="$query" />
-<button type="submit">Search</button>
-</fieldset>
-</form>
+<div class="ui-tabs ui-widget ui-widget-content ui-corner-all" id="tabs">
+   <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+      <li class="ui-state-default ui-corner-top"><a href="#search">Search</a></li>
+	</ul>
+
+ <div class="ui-tabs-panel ui-widget-content ui-corner-bottom" id="search">
+	<p>
+		<form class="searchForm" action="/search" method="GET">
+		<input type="text" name="q" value="$query" />
+		<button type="submit">Search</button>
+		</form>
+	</p>
+	</div>
+
+</div>
+
+<script type="text/javascript">
+$$(document).ready(function() {
+	$$('#tabs').tabs();
+});
+</script>
 
 $for file in files:
 	<b>Original:</b> $file.filename<br />

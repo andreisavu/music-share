@@ -1,19 +1,37 @@
 $def with (files=[], title=None)
 $var title: $title
 
-<form class="searchForm" action="/search" method="GET">
-<fieldset>
-<input type="text" name="q" />
-<button type="submit">Search</button>
-</fieldset>
-</form>
+<div class="ui-tabs ui-widget ui-widget-content ui-corner-all" id="tabs">
+   <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+     <li class="ui-state-default ui-corner-top ui-tabs-selected ui-state-active"><a href="#search">Search</a></li>
+      <li class="ui-state-default ui-corner-top"><a href="#upload">Upload</a></li>
+	</ul>
 
-<form class="uploadForm" action="/upload" method="POST"  enctype="multipart/form-data">
-<fieldset>
-<input type="file" name="file" />
-<button type="submit">Upload</button>
-</fieldset>
-</form>
+    <div class="ui-tabs-panel ui-widget-content ui-corner-bottom" id="search">
+	<p>
+		<form class="searchForm" action="/search" method="GET">
+		<input type="text" name="q"  />
+		<button type="submit">Search</button>
+		</form>
+	</p>
+    </div>
+
+    <div class="ui-tabs-panel ui-widget-content ui-corner-bottom" id="upload">
+	<p>
+		<form class="uploadForm" action="/upload" method="POST"  enctype="multipart/form-data">
+		<input type="file" name="file" />
+		<button type="submit">Upload</button>
+		</form>
+	</p>
+	</div>
+</div>
+
+<script type="text/javascript">
+$$(document).ready(function() {
+	$$('#tabs').tabs();
+});
+</script>
+
 
 <h1>Last 10 uploaded</h1>
 $for file in files:
