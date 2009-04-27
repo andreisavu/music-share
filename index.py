@@ -70,7 +70,7 @@ class do_upload:
 				info = self.get_mp3_info(input.file.file)
 				info['FILENAME'] = input.file.filename
 			except:
-				web.seeother('/upload/error')
+				raise web.seeother('/upload/error')
 
 			id = storage.save(info, input.file.file, db)
 			search.update(id, info)
