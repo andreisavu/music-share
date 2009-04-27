@@ -32,8 +32,8 @@ $$(document).ready(function() {
 });
 </script>
 
+<br />
 
-<h1>Last 10 uploaded</h1>
 $for file in files:
 	$if file.title:
 		<b>Title:</b> $file.title <br />
@@ -49,3 +49,4 @@ $for file in files:
 	</object>
 	<hr />
 
+<br />

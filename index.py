@@ -26,7 +26,7 @@ api.render = render = web.template.render(settings.TEMPLATE_FOLDER, base='base')
 
 class do_index:        
     def GET(self):
-		files = db.select('ms_files', order='date desc', limit=10)
+		files = db.select('ms_files', order='date desc', limit=5)
 		return render.index(files)
 
 class do_about:
