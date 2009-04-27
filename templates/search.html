@@ -22,7 +22,7 @@ $$(document).ready(function() {
 	$$('#tabs').tabs();
 });
 </script>
-
+<br />
 $for file in files:
 	<b>Original:</b> $file.filename<br />
 	<b>Player:</b>
@@ -32,5 +32,7 @@ $for file in files:
 	</object>
 	<hr />
 
+$if not files and query:
+	<h3>No results found. Try another query.</h3>
 
-
+<br />

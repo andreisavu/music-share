@@ -35,9 +35,15 @@ class do_about:
 
 class do_search:
 	def GET(self):
-		input = web.input(q='')
+		input = web.input(q=None)
 		q = input.q
-		files = db.select('ms_files', order='date desc', limit=10)
+		files = []
+		if q:
+			pq = [t.strip() for t in q.split(' ') if len(t.strip())!=0]
+			pq = '%' + '%'.join(pq) + '%'
+			files = db.query('select * from ms_files where filename like $q', vars={'q':pq})
+		else:
+			q = ''
 		return render.search(files, query=q, title='Search')
 
 class do_upload_error:
