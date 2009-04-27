@@ -61,20 +61,30 @@ class do_upload:
 		info.update(mp3.get_mp3tag(fp=file))
 		return info
 
+	def is_mp3(self, fp):
+		fp.seek(0)
+		bf = fp.read(1024)
+		import magic
+		mc = magic.open(magic.MAGIC_MIME)
+		mc.load()
+		if mc.buffer(bf) != 'audio/mpeg':
+			return False
+		return True
+
 	def POST(self):
 		cgi.maxlen = settings.MAX_UP_FILE_SIZE
 
 		input = web.input(file={})
 		if input.file.file:
+			if not self.is_mp3(input.file.file):
+				raise web.seeother('/upload/error')
 			try:
 				info = self.get_mp3_info(input.file.file)
 				info['FILENAME'] = input.file.filename
 			except:
 				raise web.seeother('/upload/error')
-
 			id = storage.save(info, input.file.file, db)
 			search.update(id, info)
-
 		raise web.seeother('/')
 
 class do_media:
