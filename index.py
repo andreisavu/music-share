@@ -1,6 +1,7 @@
 
 import web, cgi, settings
 import api, storage, search 
+import simplejson
 import lib.mp3 as mp3
 
 urls = (
@@ -9,8 +10,8 @@ urls = (
 	'^/search[/]?$', 'do_search',			
 	'^/upload[/]?$', 'do_upload',
 	'^/upload/error[/]?', 'do_upload_error',		
-	'^/api/about[/]?$', 'api.do_about',	
-	'^/api/search(.*)$', 'api.do_search',	
+	'^/api/about[/]?$', 'do_api_about',	
+	'^/api/search(.*)$', 'do_api_search',	
 	'^/media/(\d+)$', 'do_media'	
 )
 
@@ -35,16 +36,9 @@ class do_about:
 
 class do_search:
 	def GET(self):
-		input = web.input(q=None)
-		q = input.q
-		files = []
-		if q:
-			pq = [t.strip() for t in q.split(' ') if len(t.strip())!=0]
-			pq = '%' + '%'.join(pq) + '%'
-			files = db.query('select * from ms_files where filename like $q', vars={'q':pq})
-		else:
-			q = ''
-		return render.search(files, query=q, title='Search')
+		input = web.input(q='')
+		files = search.get(input.q, db)
+		return render.search(files, query=input.q, title='Search')
 
 class do_upload_error:
 	def GET(self):
@@ -92,6 +86,21 @@ class do_media:
 		path = "/static/upload/%d.mp3" % int(id)
 		raise web.seeother(path)
 
+class do_api_about:
+	def GET(self):
+		return render.api.about(title='Api Documentation')
+
+class do_api_search:
+	def GET(self, format):
+		if not format:
+			format = '.json'
+		input = web.input(q='')
+		res = search.get(input.q, db)
+		files = []
+		for f in res:
+			del(f['date'])
+			files.append(f)
+		return simplejson.dumps(files)
 
 def notfound():
 	return web.notfound(render.notfound(render))

@@ -5,4 +5,5 @@ Requirements:
 
 webpy & python mysql support
 python-magic : http://gavinjnet.blogspot.com/2007/05/python-file-magic.html
+python-simplejson
 
