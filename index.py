@@ -11,7 +11,8 @@ urls = (
 	'^/upload[/]?$', 'do_upload',
 	'^/upload/error[/]?', 'do_upload_error',		
 	'^/api/about[/]?$', 'do_api_about',	
-	'^/api/search(.*)$', 'do_api_search',	
+	'^/api/search(.*)$', 'do_api_search',
+	'^/api/upload[/]$', 'do_api_upload',	
 	'^/media/(\d+)$', 'do_media'	
 )
 
@@ -101,6 +102,25 @@ class do_api_search:
 			del(f['date'])
 			files.append(f)
 		return simplejson.dumps(files)
+
+class do_api_upload:
+	def POST(self, format):
+		cgi.maxlen = settings.MAX_UP_FILE_SIZE
+		if not format:
+			format = '.json'
+
+		input = web.input(file={})
+		if input.file.file:
+			if not self.is_mp3(input.file.file):
+				return simplejson.dumps({'code':1, 'error':'Check file format and try again'})
+			try:
+				info = self.get_mp3_info(input.file.file)
+				info['FILENAME'] = input.file.filename
+			except:
+				return simplejson.dumps({'code':2, 'error':'Error getting file information'})
+			id = storage.save(info, input.file.file, db)
+			search.update(id, info)
+		return simplejson.dumps({'code':0})
 
 def notfound():
 	return web.notfound(render.notfound(render))
