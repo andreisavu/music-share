@@ -1,18 +1,18 @@
 
 import web, cgi, settings
-import api, storage, search 
+import storage, search 
 import simplejson
-import lib.mp3 as mp3
+from lib import is_mp3, get_mp3_info
 
 urls = (
     '^/$', 'do_index',						
 	'^/about[/]?$', 'do_about',			
 	'^/search[/]?$', 'do_search',			
 	'^/upload[/]?$', 'do_upload',
-	'^/upload/error[/]?', 'do_upload_error',		
+	'^/upload/error[/]?$', 'do_upload_error',		
 	'^/api/about[/]?$', 'do_api_about',	
 	'^/api/search(.*)$', 'do_api_search',
-	'^/api/upload[/]$', 'do_api_upload',	
+	'^/api/upload(.*)$', 'do_api_upload',	
 	'^/media/(\d+)$', 'do_media'	
 )
 
@@ -24,7 +24,7 @@ db = web.database(dbn = settings.DB_TYPE,
 	user = settings.DB_USER,
 	pw = settings.DB_PASSW)
 
-api.render = render = web.template.render(settings.TEMPLATE_FOLDER, base='base')
+render = web.template.render(settings.TEMPLATE_FOLDER, base='base')
 
 class do_index:        
     def GET(self):
@@ -49,32 +49,15 @@ class do_upload:
 	def GET(self):
 		return render.upload(title='Upload')
 
-	def get_mp3_info(self, file):
-		file.seek(0)
-		info = mp3.mp3info(fp=file)
-		file.seek(0)
-		info.update(mp3.get_mp3tag(fp=file))
-		return info
-
-	def is_mp3(self, fp):
-		fp.seek(0)
-		bf = fp.read(1024)
-		import magic
-		mc = magic.open(magic.MAGIC_MIME)
-		mc.load()
-		if mc.buffer(bf) != 'audio/mpeg':
-			return False
-		return True
-
 	def POST(self):
 		cgi.maxlen = settings.MAX_UP_FILE_SIZE
 
 		input = web.input(file={})
 		if input.file.file:
-			if not self.is_mp3(input.file.file):
+			if not is_mp3(input.file.file):
 				raise web.seeother('/upload/error')
 			try:
-				info = self.get_mp3_info(input.file.file)
+				info = get_mp3_info(input.file.file)
 				info['FILENAME'] = input.file.filename
 			except:
 				raise web.seeother('/upload/error')
@@ -111,10 +94,10 @@ class do_api_upload:
 
 		input = web.input(file={})
 		if input.file.file:
-			if not self.is_mp3(input.file.file):
+			if not is_mp3(input.file.file):
 				return simplejson.dumps({'code':1, 'error':'Check file format and try again'})
 			try:
-				info = self.get_mp3_info(input.file.file)
+				info = get_mp3_info(input.file.file)
 				info['FILENAME'] = input.file.filename
 			except:
 				return simplejson.dumps({'code':2, 'error':'Error getting file information'})
