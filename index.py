@@ -67,7 +67,7 @@ class do_upload:
 
 class do_media:
 	def GET(self, id):	
-		path = "/static/upload/%d.mp3" % int(id)
+		path = "/%s" % storage.get_path(int(id))
 		raise web.seeother(path)
 
 class do_api_about:
