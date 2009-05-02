@@ -6,6 +6,7 @@ import os, sys
 import urllib2_file
 import urllib2
 import simplejson
+import socket
 
 if len(sys.argv) != 3:
 	print 'Usage: ./uploader.py <api_endpoint> <folder_or_file>'
@@ -16,7 +17,11 @@ def parse_cli_params():
 
 def do_file_upload(url, file):
 	data = { 'file': open(file) }
-	return simplejson.loads(urllib2.urlopen(url, data).read())
+	try:
+		r = simplejson.loads(urllib2.urlopen(url, data).read())
+		return r
+	except socket.error, e:
+		return {'code': 1}
 
 def folder_scanner(folder):
     if folder[0] == '.':
