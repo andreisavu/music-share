@@ -9,7 +9,7 @@ def db_save(info, db):
 
 def clean(v):
 	""" Remove any not visible chars """
-	return re.sub('[^\w. ]+', '', v)
+	return re.sub('[^\w.\'" ]+', '', v)
 
 def add_missing_fields(info):
 	""" Add to the info structure the missing fields """
