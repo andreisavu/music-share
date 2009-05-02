@@ -72,8 +72,13 @@ class do_media:
 		raise web.seeother(path)
 
 class do_view:
-	def GET(self, id):	
-		return render.view(search.get_by_id(id, db), title='Media view')
+	def GET(self, id):
+		f = search.get_by_id(id, db)
+		if f.title and f.artist:
+			title = "%s : %s" % (f.artist, f.title)
+		else:
+			title = f.filename
+		return render.view(f, title)
 
 class do_api_about:
 	def GET(self):
