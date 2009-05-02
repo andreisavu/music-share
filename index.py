@@ -1,6 +1,6 @@
 
 import web, cgi, settings
-import storage, search 
+import storage, search, db
 import simplejson
 from lib import is_mp3, get_mp3_info
 
@@ -19,17 +19,11 @@ urls = (
 
 app = web.application(urls, globals())
 
-db = web.database(dbn = settings.DB_TYPE,
-	host = settings.DB_HOST,
-	db = settings.DB_NAME,
-	user = settings.DB_USER,
-	pw = settings.DB_PASSW)
-
 render = web.template.render(settings.TEMPLATE_FOLDER, base='base')
 
 class do_index:        
     def GET(self):
-		files = db.select('ms_files', order='date desc', limit=5)
+		files = db.slave.select('ms_files', order='date desc', limit=5)
 		return render.index(files)
 
 class do_about:
@@ -39,7 +33,7 @@ class do_about:
 class do_search:
 	def GET(self):
 		input = web.input(q='')
-		files = search.get(input.q, db)
+		files = search.get(input.q, db.slave)
 		return render.search(files, query=input.q, title='Search')
 
 class do_upload_error:
@@ -62,7 +56,7 @@ class do_upload:
 				info['FILENAME'] = input.file.filename
 			except:
 				raise web.seeother('/upload/error')
-			id = storage.save(info, input.file.file, db)
+			id = storage.save(info, input.file.file, db.master)
 			search.update(id, info)
 		raise web.seeother('/')
 
@@ -73,10 +67,10 @@ class do_media:
 
 class do_view:
 	def GET(self, id):
-		f = search.get_by_id(id, db)
+		f = search.get_by_id(id, db.slave)
 		if f.title and f.artist:
 			title = "%s : %s" % (f.artist, f.title)
-			related = search.get(f.artist, db)
+			related = search.get(f.artist, db.slave)
 		else:
 			title = f.filename
 			import re
@@ -86,7 +80,7 @@ class do_view:
 				q = "%s %s" % (q[0], q[1])
 			else:
 				q = ' '.join(q)
-			related = search.get(q, db)
+			related = search.get(q, db.slave)
 
 		related = [x for x in related if x.id != int(id)]
 		return render.view(f, related, title)
@@ -100,7 +94,7 @@ class do_api_search:
 		if not format:
 			format = '.json'
 		input = web.input(q='')
-		res = search.get(input.q, db)
+		res = search.get(input.q, db.slave)
 		files = []
 		for f in res:
 			del(f['date'])
@@ -122,7 +116,7 @@ class do_api_upload:
 				info['FILENAME'] = input.file.filename
 			except:
 				return simplejson.dumps({'code':2, 'error':'Error getting file information'})
-			id = storage.save(info, input.file.file, db)
+			id = storage.save(info, input.file.file, db.master)
 			search.update(id, info)
 		return simplejson.dumps({'code':0})
 
