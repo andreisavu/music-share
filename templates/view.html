@@ -1,9 +1,8 @@
-$def with (file, title=None)
+$def with (file, related, title=None)
 $var title: $title
 
 <div class="ui-widget ui-widget-content ui-corner-all">
 	<h2 style="color: white;padding-left: 10px;margin:0px;">
-
 $if file.artist and file.title:
 	$file.artist : $file.title
 $else:
@@ -14,10 +13,35 @@ $else:
 
 <br />
 
+<table>
+<tr><td style="width: 250px;vertical-align: top">
+
 <object type="application/x-shockwave-flash" data="/static/player_mp3.swf" width="200" height="20">
 	<param name="movie" value="/static/player_mp3.swf" /> 
 	<param name="FlashVars" value="mp3=/media/$(file.id)&amp;showstop=1" />
 </object>
 
-
 <br /><br />
+<table style="width: 200px">
+$if file.title:
+	<tr><th>Title:</th><td>$file.title</td></tr>
+$if file.artist:
+	<tr><th>Artist:</th><td>$file.artist</td></tr>
+$if file.album:
+	<tr><th>Album:</th><td>$file.album</td></tr>
+$if file.year:
+	<tr><th>Year:</th><td>$file.year</td></tr>
+</table>
+
+</td><td style="vertical-align: top">
+
+$for f in related:
+	$if f.title and f.artist:
+		<h3> $f.artist : <a href="/view/$(f.id)">$f.title</a> </h3>
+	$else:
+		<h3> <a href="/view/$(f.id)">$f.filename</a> </h3>
+
+</td></tr>
+</table>
+
+<br />

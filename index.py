@@ -76,9 +76,20 @@ class do_view:
 		f = search.get_by_id(id, db)
 		if f.title and f.artist:
 			title = "%s : %s" % (f.artist, f.title)
+			related = search.get(f.artist, db)
 		else:
 			title = f.filename
-		return render.view(f, title)
+			import re
+			q = re.sub('[^a-zA-Z ]+', ' ', f.filename[:-4])
+			q = [t[:5] for t in q.split(' ') if t.strip()]
+			if len(q) > 2:
+				q = "%s %s" % (q[0], q[1])
+			else:
+				q = ' '.join(q)
+			related = search.get(q, db)
+
+		related = [x for x in related if x.id != int(id)]
+		return render.view(f, related, title)
 
 class do_api_about:
 	def GET(self):
