@@ -13,7 +13,8 @@ urls = (
 	'^/api/about[/]?$', 'do_api_about',	
 	'^/api/search(.*)$', 'do_api_search',
 	'^/api/upload(.*)$', 'do_api_upload',	
-	'^/media/(\d+)$', 'do_media'	
+	'^/media/(\d+)$', 'do_media',
+	'^/view/(\d+)$', 'do_view'
 )
 
 app = web.application(urls, globals())
@@ -69,6 +70,10 @@ class do_media:
 	def GET(self, id):	
 		path = "/%s" % storage.get_path(int(id))
 		raise web.seeother(path)
+
+class do_view:
+	def GET(self, id):	
+		return render.view(search.get_by_id(id, db), title='Media view')
 
 class do_api_about:
 	def GET(self):

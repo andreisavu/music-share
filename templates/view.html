@@ -1,0 +1,23 @@
+$def with (file, title=None)
+$var title: $title
+
+<div class="ui-widget ui-widget-content ui-corner-all">
+	<h2 style="color: white;padding-left: 10px;margin:0px;">
+
+$if file.artist and file.title:
+	$file.artist : $file.title
+$else:
+	$file.filename
+
+	</h2>
+</div>
+
+<br />
+
+<object type="application/x-shockwave-flash" data="/static/player_mp3.swf" width="200" height="20">
+	<param name="movie" value="/static/player_mp3.swf" /> 
+	<param name="FlashVars" value="mp3=/media/$(file.id)&amp;showstop=1" />
+</object>
+
+
+<br /><br />

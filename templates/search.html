@@ -23,14 +23,19 @@ $$(document).ready(function() {
 });
 </script>
 <br />
+
 $for file in files:
-	<b>Original:</b> $file.filename<br />
-	<b>Player:</b>
+	$if file.title and file.artist:
+		<h3> $file.artist : <a href="/view/$(file.id)">$file.title</a> </h3>
+	$else:
+		<h3> <a href="/view/$(file.id)">$file.filename</a> </h3>
 	<object type="application/x-shockwave-flash" data="/static/player_mp3.swf" width="200" height="20">
 		<param name="movie" value="/static/player_mp3.swf" /> 
 		<param name="FlashVars" value="mp3=/media/$(file.id)&amp;showstop=1" />
 	</object>
+	<br /><br />
 	<hr />
+
 
 $if not files and query:
 	<h3>No results found. Try another query.</h3>
