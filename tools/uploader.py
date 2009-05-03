@@ -56,6 +56,10 @@ def handle_file(f):
 
 url, src = parse_cli_params()
 
+if not os.path.exists(src):
+	print 'File or dir not found.'
+	sys.exit(2)
+
 if os.path.isfile(src):
 	handle_file(src)
 else:
