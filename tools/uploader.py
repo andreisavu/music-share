@@ -2,17 +2,22 @@
 
 # http://fabien.seisen.org/python/urllib2_multipart.html
 
+__author__ = 'Savu Andrei <contact@andreisavu.ro>'
+
 import os, sys
 import urllib2_file
 import urllib2
 import simplejson
 import socket
 
-if len(sys.argv) != 3:
-	print 'Usage: ./uploader.py <api_endpoint> <folder_or_file>'
-	sys.exit(0)
-
 def parse_cli_params():
+	if len(sys.argv) != 3:
+		print 'Usage: ./uploader.py <api_endpoint> <folder_or_file>'
+		sys.exit(0)
+	# api_endpoint should be a valid url
+	if not os.path.exists(sys.argv[2]):
+		print 'File or dir not found.'
+		sys.exit(2)
 	return sys.argv[1], sys.argv[2]
 
 def do_file_upload(url, file):
@@ -54,15 +59,10 @@ def handle_file(f):
 	else:
 		print 'Ignore:', f
 
-url, src = parse_cli_params()
-
-if not os.path.exists(src):
-	print 'File or dir not found.'
-	sys.exit(2)
-
-if os.path.isfile(src):
-	handle_file(src)
-else:
-	for f in folder_scanner(src):
-		handle_file(f)
-
+if __name__ == '__main__':
+	url, src = parse_cli_params()
+	if os.path.isfile(src):
+		handle_file(src)
+	else:
+		for f in folder_scanner(src):
+			handle_file(f)
