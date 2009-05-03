@@ -1,4 +1,4 @@
-$def with (file, related, title=None)
+$def with (file, related, embedded, title=None)
 $var title: $title
 
 <div class="ui-widget ui-widget-content ui-corner-all">
@@ -14,7 +14,7 @@ $else:
 <br />
 
 <table>
-<tr><td style="width: 250px;vertical-align: top">
+<tr><td style="width: 280px;vertical-align: top">
 
 <object type="application/x-shockwave-flash" data="/static/player_mp3.swf" width="200" height="20">
 	<param name="movie" value="/static/player_mp3.swf" /> 
@@ -22,7 +22,7 @@ $else:
 </object>
 
 <br /><br />
-<table style="width: 200px">
+<table style="width: 250px;font-size: 15px;">
 $if file.title:
 	<tr><th>Title:</th><td>$file.title</td></tr>
 $if file.artist:
@@ -32,6 +32,10 @@ $if file.album:
 $if file.year:
 	<tr><th>Year:</th><td>$file.year</td></tr>
 </table>
+
+<br />
+
+<input type="text" style="width: 250px" readonly="readonly" onclick="this.focus();this.select()" value="$embedded" />
 
 </td><td style="vertical-align: top">
 

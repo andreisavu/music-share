@@ -81,9 +81,11 @@ class do_view:
 			else:
 				q = ' '.join(q)
 			related = search.get(q, db.slave)
-
 		related = [x for x in related if x.id != int(id)]
-		return render.view(f, related, title)
+
+		url = "%s://%s" % (web.ctx['protocol'], web.ctx['host'])
+		embedded = """<object type="application/x-shockwave-flash" data="%s/static/player_mp3.swf" width="200" height="20"><param name="movie" value="%s/static/player_mp3.swf" /><param name="FlashVars" value="mp3=%s/media/%d&amp;showstop=1" /></object>""" % (url, url, url, int(id))
+		return render.view(f, related, embedded, title)
 
 class do_api_about:
 	def GET(self):
