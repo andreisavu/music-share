@@ -1,5 +1,10 @@
 
 import mp3
+import os
+
+def freespace(p):
+	s = os.statvfs(p)
+	return s.f_bsize * s.f_bavail
 
 def get_mp3_info(file):
 	file.seek(0)
@@ -9,13 +14,13 @@ def get_mp3_info(file):
 	return info
 
 def is_mp3(fp):
-		fp.seek(0)
-		bf = fp.read(1024)
-		import magic
-		mc = magic.open(magic.MAGIC_MIME)
-		mc.load()
-		if mc.buffer(bf) != 'audio/mpeg':
-			return False
-		return True
+	fp.seek(0)
+	bf = fp.read(1024)
+	import magic
+	mc = magic.open(magic.MAGIC_MIME)
+	mc.load()
+	if mc.buffer(bf) != 'audio/mpeg':
+		return False
+	return True
 
 
