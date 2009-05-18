@@ -7,3 +7,26 @@ webpy & python mysql support
 python-magic : http://gavinjnet.blogspot.com/2007/05/python-file-magic.html
 python-simplejson
 
+Arhitecture:
+
+Master/Slave MySQL database:
+ - write to master & read from slaves
+Cluster of identical nodes. Components:
+ - nginx + wsgi for app
+ - log analyser 
+Memcache for session storage & for avoiding database hits
+Apache Solr for search and clustering
+ActiveMQ for async tasks
+
+Details:
+
+Upload steps:
+- check file format & extract info
+- check local storage space & save if available
+- if space not available contact another computer from cluster
+- send message notification of the new file
+
+Log analyser:
+- watch nginx log and node load. if high load detected 
+send notification message in order to improve capabilities
+
